@@ -1,0 +1,195 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuestionario de Hardware</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; padding: 20px; max-width: 800px; margin: 0 auto; }
+        h1 { text-align: center; }
+        .question { margin-bottom: 20px; }
+        button { display: block; margin: 20px auto; padding: 10px 20px; font-size: 16px; }
+    </style>
+</head>
+<body>
+    <h1>Cuestionario de Hardware</h1>
+    <div id="studentInfo">
+        <label for="studentName">Nombre y Apellidos:</label>
+        <input type="text" id="studentName" required>
+        <button onclick="startQuiz()">Comenzar Cuestionario</button>
+    </div>
+    <div id="quiz" style="display: none;"></div>
+    <button id="submitButton" style="display: none;" onclick="submitQuiz()">Enviar Respuestas</button>
+
+    <script>
+        const questions = [
+            {
+                question: "¿Qué componente se considera el 'cerebro' del ordenador?",
+                options: ["Disco duro", "RAM", "CPU", "Tarjeta gráfica"],
+                correctAnswer: 2
+            },
+            {
+                question: "¿Qué tipo de memoria es volátil y se borra al apagar el ordenador?",
+                options: ["ROM", "RAM", "Caché", "BIOS"],
+                correctAnswer: 1
+            },
+            {
+                question: "¿Qué dispositivo se utiliza principalmente para almacenar datos a largo plazo?",
+                options: ["CPU", "RAM", "Disco duro", "Tarjeta de red"],
+                correctAnswer: 2
+            },
+            {
+                question: "¿Qué componente se encarga de procesar gráficos complejos?",
+                options: ["CPU", "RAM", "Tarjeta gráfica", "Placa base"],
+                correctAnswer: 2
+            },
+            {
+                question: "¿Qué tipo de puerto se utiliza comúnmente para conectar dispositivos externos como teclados y ratones?",
+                options: ["HDMI", "USB", "Ethernet", "VGA"],
+                correctAnswer: 1
+            },
+            {
+                question: "¿Qué componente suministra energía a todos los demás componentes del ordenador?",
+                options: ["Batería", "Placa base", "Fuente de alimentación", "CPU"],
+                correctAnswer: 2
+            },
+            {
+                question: "¿Qué tipo de almacenamiento es generalmente más rápido?",
+                options: ["HDD", "SSD", "DVD", "Cinta magnética"],
+                correctAnswer: 1
+            },
+            {
+                question: "¿Qué componente conecta todos los demás componentes y permite que se comuniquen entre sí?",
+                options: ["CPU", "RAM", "Placa base", "Fuente de alimentación"],
+                correctAnswer: 2
+            },
+            {
+                question: "¿Qué tipo de memoria es no volátil y contiene instrucciones básicas para iniciar el ordenador?",
+                options: ["RAM", "Cache", "ROM", "VRAM"],
+                correctAnswer: 2
+            },
+            {
+                question: "¿Qué dispositivo se utiliza para introducir texto en un ordenador?",
+                options: ["Monitor", "Altavoces", "Ratón", "Teclado"],
+                correctAnswer: 3
+            },
+            {
+                question: "¿Qué componente se utiliza para enfriar la CPU?",
+                options: ["Ventilador", "RAM", "Disco duro", "Tarjeta de sonido"],
+                correctAnswer: 0
+            },
+            {
+                question: "¿Qué tipo de conexión se utiliza comúnmente para conectar un ordenador a Internet?",
+                options: ["USB", "HDMI", "Ethernet", "VGA"],
+                correctAnswer: 2
+            },
+            {
+                question: "¿Qué dispositivo se utiliza para imprimir documentos en papel?",
+                options: ["Escáner", "Monitor", "Impresora", "Altavoces"],
+                correctAnswer: 2
+            },
+            {
+                question: "¿Qué componente se encarga de procesar el sonido en un ordenador?",
+                options: ["Tarjeta gráfica", "Tarjeta de sonido", "Placa base", "CPU"],
+                correctAnswer: 1
+            },
+            {
+                question: "¿Qué tipo de dispositivo es un SSD?",
+                options: ["Memoria RAM", "Procesador", "Almacenamiento", "Tarjeta gráfica"],
+                correctAnswer: 2
+            }
+        ];
+
+        let currentQuestion = 0;
+        let answers = [];
+
+        function startQuiz() {
+            const studentName = document.getElementById('studentName').value;
+            if (!studentName) {
+                alert('Por favor, introduce tu nombre y apellidos.');
+                return;
+            }
+            document.getElementById('studentInfo').style.display = 'none';
+            document.getElementById('quiz').style.display = 'block';
+            document.getElementById('submitButton').style.display = 'block';
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const quizContainer = document.getElementById('quiz');
+            const questionData = questions[currentQuestion];
+            
+            let questionHtml = `
+                <div class="question">
+                    <h3>Pregunta ${currentQuestion + 1}:</h3>
+                    <p>${questionData.question}</p>
+            `;
+            
+            for (let i = 0; i < questionData.options.length; i++) {
+                questionHtml += `
+                    <label>
+                        <input type="radio" name="q${currentQuestion}" value="${i}">
+                        ${questionData.options[i]}
+                    </label><br>
+                `;
+            }
+            
+            questionHtml += '</div>';
+            quizContainer.innerHTML += questionHtml;
+        }
+
+        function submitQuiz() {
+            const studentName = document.getElementById('studentName').value;
+            let correctAnswers = 0;
+            let incorrectAnswers = 0;
+
+            for (let i = 0; i < questions.length; i++) {
+                const selectedAnswer = document.querySelector(`input[name="q${i}"]:checked`);
+                if (selectedAnswer) {
+                    if (parseInt(selectedAnswer.value) === questions[i].correctAnswer) {
+                        correctAnswers++;
+                    } else {
+                        incorrectAnswers++;
+                    }
+                } else {
+                    incorrectAnswers++;
+                }
+            }
+
+            const totalQuestions = questions.length;
+            const score = (correctAnswers / totalQuestions) * 10;
+
+            alert(`
+                Nombre: ${studentName}
+                Respuestas correctas: ${correctAnswers}
+                Respuestas incorrectas: ${incorrectAnswers}
+                Nota: ${score.toFixed(2)} / 10
+            `);
+
+            // Aquí iría el código para enviar los resultados a Google Sheets
+	fetch('https://script.google.com/macros/s/AKfycbzBp7L2m7tQ9AL7e5XA7zj_gBZzbomWdsLK3C7SGw8VDdA5qlYFVD2BZOznXKUNNHSV/exec', {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            name: studentName,
+            correctAnswers: correctAnswers,
+            incorrectAnswers: incorrectAnswers
+        })
+    }).then(() => {
+        console.log('Resultados enviados a Google Sheets');
+    }).catch(error => {
+        console.error('Error al enviar resultados:', error);
+    });
+
+
+            console.log("Enviar a Google Sheets:", studentName, correctAnswers, incorrectAnswers);
+        }
+
+        showQuestion();
+    </script>
+</body>
+</html>
